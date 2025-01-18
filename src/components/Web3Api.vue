@@ -29,26 +29,43 @@ const address = ref('0xF80C1f19847026CA3df18b82c5376134Ab254c28')
 const privateKey = ref('0xdfa1aa88104217a4ee2a96c60f6045413b9d578c3a7b95235e0e13af1e16d621')
 const balance = ref(0)
 
-async function main() {
-  try {
-    // 獲取帳戶列表
-    const accounts = await web3.eth.getAccounts()
-    console.log('帳戶列表:', accounts)
+//單位轉換
 
-    // 假設有帳戶，查詢第一個帳戶的餘額
-    if (accounts.length > 0) {
-      balance.value = await web3.eth.getBalance(address)
-      console.log(`帳戶 ${address.value} 的餘額:`, balance.value)
-    } else {
-      console.log('沒有可用的帳戶')
-    }
-  } catch (error) {
-    // 錯誤處理
-    console.error('操作失敗:', error.message)
-  }
-}
+const balanceInWei = '1000000000000000000' // 區塊鏈返回的餘額（wei）
+const balanceInEther = web3.utils.fromWei(balanceInWei, 'ether') // 轉換成 ether
+console.log(`你的餘額是: ${balanceInEther} ETH`) // 輸出: 你的餘額是: 1 ETH
 
-main()
+const amountInEther = '0.5' // 用戶想發送 0.5 ether
+const amountInWei = web3.utils.toWei(amountInEther, 'ether') // 轉換成 wei
+console.log(`發送金額: ${amountInWei} wei`) // 輸出: 發送金額: 500000000000000000 wei
+
+//手續費
+const gasPriceInGwei = '20'
+const gasPriceInWei = web3.utils.toWei(gasPriceInGwei, 'Gwei') // 轉換成 wei
+const gasLimit = 21000 // 標準交易的 gasLimit
+const feeInWei = gasPriceInWei * gasLimit
+console.log(`手續費: ${feeInWei} wei`)
+
+// async function main() {
+//   try {
+//     // 獲取帳戶列表
+//     const accounts = await web3.eth.getAccounts()
+//     console.log('帳戶列表:', accounts)
+
+//     // 假設有帳戶，查詢第一個帳戶的餘額
+//     if (accounts.length > 0) {
+//       balance.value = await web3.eth.getBalance(address)
+//       console.log(`帳戶 ${address.value} 的餘額:`, balance.value)
+//     } else {
+//       console.log('沒有可用的帳戶')
+//     }
+//   } catch (error) {
+//     // 錯誤處理
+//     console.error('操作失敗:', error.message)
+//   }
+// }
+
+// main()
 </script>
 
 <style lang="scss" scoped>
