@@ -1,9 +1,9 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+import Web3Api from '@/components/Web3Api.vue'
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <Web3Api />
   </main>
 </template>
