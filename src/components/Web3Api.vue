@@ -10,10 +10,13 @@
   <p>
     帳戶餘額 : <span class="value">{{ balance }}</span>
   </p>
+  <p>
+    帳戶次數 : <span class="value">{{ nonce }}</span>
+  </p>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import Web3 from 'web3'
 
 const title = ref('Account Info')
@@ -46,26 +49,34 @@ const gasLimit = 21000 // 標準交易的 gasLimit
 const feeInWei = gasPriceInWei * gasLimit
 console.log(`手續費: ${feeInWei} wei`)
 
-// async function main() {
-//   try {
-//     // 獲取帳戶列表
-//     const accounts = await web3.eth.getAccounts()
-//     console.log('帳戶列表:', accounts)
+// 獲取餘額
+async function fetchBalance() {
+  try {
+    const balanceInWei = await web3.eth.getBalance(address.value)
+    balance.value = web3.utils.fromWei(balanceInWei, 'ether')
+  } catch (error) {
+    console.error('獲取餘額失敗:', error)
+  }
+}
 
-//     // 假設有帳戶，查詢第一個帳戶的餘額
-//     if (accounts.length > 0) {
-//       balance.value = await web3.eth.getBalance(address)
-//       console.log(`帳戶 ${address.value} 的餘額:`, balance.value)
-//     } else {
-//       console.log('沒有可用的帳戶')
-//     }
-//   } catch (error) {
-//     // 錯誤處理
-//     console.error('操作失敗:', error.message)
-//   }
-// }
+// 獲取交易數量
+const nonce = ref(0)
+async function fetchTransactionCount() {
+  try {
+    const res = await web3.eth.getTransactionCount(address.value)
+    console.log('Transaction Count:', res)
 
-// main()
+    nonce.value = res
+  } catch (error) {
+    console.error('獲取交易數量失敗:', error)
+  }
+}
+
+// 在組件掛載時執行
+onMounted(() => {
+  fetchBalance()
+  fetchTransactionCount()
+})
 </script>
 
 <style lang="scss" scoped>
